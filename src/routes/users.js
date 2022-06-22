@@ -8,13 +8,26 @@ const pool = require('../connections/create_connection');
 
 const app = express();
 
+//get 30 questions from database
 app.get('/', async (req, res) => {
     try {
-        const result = await pool.query('select * from questions_choices')
-        res.json(result[0]);
+        const questions = await pool.query('select * from questions_choices')
+        res.json(questions[0]);
     }
     catch (err) {
-        console.log("error", err);
+        console.log("ERROR", err);
+        res.send(err);
+    }
+})
+
+//get 25 strength from database
+app.get('/strength', async(req,res) => {
+    try {
+        const strength = await pool.query('select * from strength')
+        res.json(strength[0]);
+    }
+    catch(err) {
+        console.log("ERROR", err);
         res.send(err);
     }
 })
