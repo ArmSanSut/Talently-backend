@@ -1,14 +1,9 @@
-const mysql = require('mysql2/promise');
-const express = require('express');
-const cors = require('cors');
-const port = 3000;
-
 //import connection pool
 const pool = require('../connections/create_connection');
 
-const app = express();
+const router = require('express').Router();
 
-app.get('/', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const result = await pool.query('select * from questions_choices')
         res.json(result[0]);
@@ -19,7 +14,5 @@ app.get('/', async (req, res) => {
     }
 })
 
-app.listen(port, () => {
-    console.log(`Listening on port ${port}`);
-})
+
 module.exports = app;
