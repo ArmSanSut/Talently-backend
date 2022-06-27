@@ -3,9 +3,9 @@ const pool = mysql.createPool({
     connectionLimit : 10,
     host : 'localhost',
     user : 'root',
-    password : 'root',
+    //password : 'root',
     database : 'personalassessment',
-    port: 8889,
+    //port: 8889,
 })
 
 module.exports = pool;
