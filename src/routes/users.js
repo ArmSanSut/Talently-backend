@@ -3,6 +3,7 @@ const pool = require('../connections/create_connection');
 
 const router = require('express').Router();
 
+//get 30 questions from database
 router.get('/', async (req, res) => {
     try {
         const questions = await pool.query('select * from questions_choices')
