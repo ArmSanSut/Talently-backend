@@ -33,10 +33,10 @@ router.post('/quiz', (async(req,res) => {
         const  {user_id,question_id, answer} = req.body;
         const [answers, field] = await pool.query('insert into user_score (user_id, question_id, answer) values (?,?, ?)',[parseInt(user_id, 10), parseInt(question_id, 10), answer]);
         console.log(answers);
-        // res.send(answers);
         if(answers.affectedRows === 1) {
-            res.status(200).send({message: "insert"});  
+            res.status(200).send({message: "Successfully"});  
         }
+        return res.status(400).json({ message: "Something went wrong"})
     }
     catch(err){
         console.log("ERROR", err);
@@ -62,12 +62,16 @@ router.post('/strength/:id', async(req,res) => {
     }
 });
 
-router.post('/',async (req,res) => {
+router.post('/register',async (req,res) => {
     try {
-        const {username, password} = req.body;
+        const {name, sirname, username, email, password} = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
-        const [register, field] =  await pool.query('insert into users (id, username, password) values (?,?,?)', [parseInt(id), username, hashedPassword]);
+        const [register, field] =  await pool.query('insert into users (name, sirname, username, email, password) values (?,?,?, ?, ?)', [name, sirname, username, email, hashedPassword]);
         console.log(register);
+        if (register.affectedRows === 1) {
+            return res.status(200).json({message: "Successfully"})
+        } 
+        return res.status(400).json({ message: "Something went wrong"})
     }
     catch (err) {
         console.log("ERROR", err);
