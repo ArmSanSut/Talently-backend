@@ -16,62 +16,63 @@ router.get('/', async (req, res) => {
 })
 
 //get 25 strength from database
-router.get('/strength', async(req,res) => {
+router.get('/strength', async (req, res) => {
     try {
         const strength = await pool.query('select * from strength')
         res.json(strength[0]);
     }
-    catch(err) {
+    catch (err) {
         console.log("ERROR", err);
         res.send(err);
     }
 })
 
-router.post('/quiz', (async(req,res) => {
-    
-    try{
-        const  {user_id,question_id, answer} = req.body;
-        const [answers, field] = await pool.query('insert into user_score (user_id, question_id, answer) values (?,?, ?)',[parseInt(user_id, 10), parseInt(question_id, 10), answer]);
+router.post('/quiz', (async (req, res) => {
+
+    try {
+        // const  {user_id,question_id, answer} = req.body;
+        const [answers, field] = await pool.query('insert into user_score (user_id, question_id, answer, total_score) values ?', [req.body.answers]);
+        console.log(req.body.answers);
         console.log(answers);
-        if(answers.affectedRows === 1) {
-            res.status(200).send({message: "Successfully"});  
+        if (answers.affectedRows === req.body.answers.length) {
+            return res.status(200).json({ message: "Successfully" });
         }
-        return res.status(400).json({ message: "Something went wrong"})
+        return res.status(400).json({ message: "Something went wrong" })
     }
-    catch(err){
+    catch (err) {
         console.log("ERROR", err);
         res.send(err);
     }
 }));
-router.post('/strength/:id', async(req,res) => {
+router.post('/strength/:id', async (req, res) => {
     try {
         console.log("test");
         const id = req.params.id
-        const {strength_1,strength_2,strength_3,strength_4,strength_5,strength_6,strength_7,strength_8} = req.body
-        const [rows, field] = await pool.query(`INSERT INTO \`strength_answer\`(\`user_id\`, \`strength_1\`, \`strength_2\`, \`strength_3\`, \`strength_4\`, \`strength_5\`, \`strength_6\`, \`strength_7\`, \`strength_8\`) VALUES (?,?,?,?,?,?,?,?,?)`, 
-        [id,strength_1,strength_2,strength_3,strength_4,strength_5,strength_6,strength_7,strength_8])
+        const { strength_1, strength_2, strength_3, strength_4, strength_5, strength_6, strength_7, strength_8 } = req.body
+        const [rows, field] = await pool.query(`INSERT INTO \`strength_answer\`(\`user_id\`, \`strength_1\`, \`strength_2\`, \`strength_3\`, \`strength_4\`, \`strength_5\`, \`strength_6\`, \`strength_7\`, \`strength_8\`) VALUES (?,?,?,?,?,?,?,?,?)`,
+            [id, strength_1, strength_2, strength_3, strength_4, strength_5, strength_6, strength_7, strength_8])
         console.log(rows);
         if (rows.affectedRows === 1) {
-            return res.status(200).json({message: "Successfully"})
-        } 
-        return res.status(400).json({ message: "Something went wrong"})
+            return res.status(200).json({ message: "Successfully" })
+        }
+        return res.status(400).json({ message: "Something went wrong" })
     }
-    catch(err) {
+    catch (err) {
         console.log("ERROR", err);
         res.send(err);
     }
 });
 
-router.post('/register',async (req,res) => {
+router.post('/register', async (req, res) => {
     try {
-        const {name, sirname, username, email, password} = req.body;
+        const { name, sirname, username, email, password } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
-        const [register, field] =  await pool.query('insert into users (name, sirname, username, email, password) values (?,?,?, ?, ?)', [name, sirname, username, email, hashedPassword]);
+        const [register, field] = await pool.query('insert into users (name, sirname, username, email, password) values (?,?,?,?,?)', [name, sirname, username, email, hashedPassword]);
         console.log(register);
         if (register.affectedRows === 1) {
-            return res.status(200).json({message: "Successfully"})
-        } 
-        return res.status(400).json({ message: "Something went wrong"})
+            return res.status(200).json({ message: "Successfully" })
+        }
+        return res.status(400).json({ message: "Something went wrong" })
     }
     catch (err) {
         console.log("ERROR", err);
