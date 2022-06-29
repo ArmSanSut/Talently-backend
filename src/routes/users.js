@@ -27,6 +27,7 @@ router.get('/strength', async (req, res) => {
     }
 })
 
+//post 35 answers to DB
 router.post('/quiz', (async (req, res) => {
 
     try {
@@ -44,9 +45,23 @@ router.post('/quiz', (async (req, res) => {
         res.send(err);
     }
 }));
+
+//get answer from strength's database
+router.get('/strength/:id', async (req, res) => {
+    try {
+        const id = req.params.id
+        const strength = await pool.query('select * from strength_answer where user_id = ?',[id])
+        res.json(strength[0]);
+    }
+    catch (err) {
+        console.log("ERROR", err);
+        res.send(err);
+    }
+})
+
+//post answer to strength's database
 router.post('/strength/:id', async (req, res) => {
     try {
-        console.log("test");
         const id = req.params.id
         const { strength_1, strength_2, strength_3, strength_4, strength_5, strength_6, strength_7, strength_8 } = req.body
         const [rows, field] = await pool.query(`INSERT INTO \`strength_answer\`(\`user_id\`, \`strength_1\`, \`strength_2\`, \`strength_3\`, \`strength_4\`, \`strength_5\`, \`strength_6\`, \`strength_7\`, \`strength_8\`) VALUES (?,?,?,?,?,?,?,?,?)`,
@@ -63,6 +78,7 @@ router.post('/strength/:id', async (req, res) => {
     }
 });
 
+//register account to DB
 router.post('/register', async (req, res) => {
     try {
         const { name, sirname, username, email, password } = req.body;
