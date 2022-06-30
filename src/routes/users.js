@@ -50,7 +50,7 @@ router.post('/quiz', (async (req, res) => {
 router.get('/strength/:id', async (req, res) => {
     try {
         const id = req.params.id
-        const strength = await pool.query('select * from strength_answer where user_id = ?',[id])
+        const strength = await pool.query('SELECT * FROM strength LEFT JOIN strength_answer ON strength.id = strength_answer.strength_1 || strength.id = strength_answer.strength_2  || strength.id = strength_answer.strength_3 || strength.id = strength_answer.strength_4 || strength.id = strength_answer.strength_5 || strength.id = strength_answer.strength_6 || strength.id = strength_answer.strength_7 || strength.id = strength_answer.strength_8 WHERE strength_answer.user_id = ? ORDER BY strength.id', [id])
         res.json(strength[0]);
     }
     catch (err) {
