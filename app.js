@@ -15,6 +15,8 @@ app.use(express.json());
 app.use(express.urlencoded({extended : false}));
 app.use(logger('dev'));
 app.use(cookieParser());
+app.use(express.static('public'))
+
 
 app.use('/api/user/', userRouter);
 app.use('/api/auth/', authRouter);

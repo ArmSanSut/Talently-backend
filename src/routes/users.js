@@ -2,6 +2,8 @@
 const pool = require('../connections/create_connection');
 const router = require('express').Router();
 const bcrypt = require('bcrypt');
+const moment = require('moment-timezone');
+const moment1 = require('moment');
 
 //get 30 questions from database
 router.get('/', async (req, res) => {
@@ -51,7 +53,7 @@ router.post('/quiz', (async (req, res) => {
 router.get('/strength/:id', async (req, res) => {
     try {
         const id = req.params.id
-        const strength = await pool.query('select * from strength_answer where user_id = ?',[id])
+        const strength = await pool.query('SELECT strength.image FROM strength LEFT JOIN strength_answer ON strength.id = strength_answer.strength_1 || strength.id = strength_answer.strength_2  || strength.id = strength_answer.strength_3 || strength.id = strength_answer.strength_4 || strength.id = strength_answer.strength_5 || strength.id = strength_answer.strength_6 || strength.id = strength_answer.strength_7 || strength.id = strength_answer.strength_8 WHERE strength_answer.user_id = ? ORDER BY strength.id', [id])
         res.json(strength[0]);
     }
     catch (err) {
@@ -65,6 +67,7 @@ router.post('/strength/:id', async (req, res) => {
     try {
         const id = req.params.id
         const { strength_1, strength_2, strength_3, strength_4, strength_5, strength_6, strength_7, strength_8 } = req.body
+        console.log(req.body);
         const [rows, field] = await pool.query(`INSERT INTO \`strength_answer\`(\`user_id\`, \`strength_1\`, \`strength_2\`, \`strength_3\`, \`strength_4\`, \`strength_5\`, \`strength_6\`, \`strength_7\`, \`strength_8\`) VALUES (?,?,?,?,?,?,?,?,?)`,
             [id, strength_1, strength_2, strength_3, strength_4, strength_5, strength_6, strength_7, strength_8])
         console.log(rows);
@@ -78,6 +81,40 @@ router.post('/strength/:id', async (req, res) => {
         res.send(err);
     }
 });
+
+
+//post achievement to  database
+router.post('/achievement/:id', async (req, res) => {
+    try {
+        const id = req.params.id
+        const { date_start, date_end, title, description } = req.body
+        const [rows,] = await pool.query(`INSERT INTO \`achievements\`(\`user_id\`, \`date_start\`, \`date_end\`, \`title\`, \`description\`) VALUES (?,?,?,?,?)`,
+            [id, date_start, date_end, title, description])
+        console.log(rows);
+        if (rows.affectedRows === 1) {
+            return res.status(200).json({ message: "Successfully" })
+        }
+        return res.status(400).json({ message: "Something went wrong" })
+    }
+    catch (err) {
+        console.log("ERROR", err);
+        res.send(err);
+    }
+});
+
+//get achievement from achievement's database
+router.get('/achievement/:id', async (req, res) => {
+    try {
+        const id = req.params.id
+        const achievement = await pool.query('SELECT * FROM achievements where id = ?', [id])
+        res.json(achievement[0]);
+    }
+    catch (err) {
+        console.log("ERROR", err);
+        res.send(err);
+    }
+})
+
 
 //register account to DB
 router.post('/register', async (req, res) => {
@@ -97,7 +134,11 @@ router.post('/register', async (req, res) => {
     }
 });
 
-
-
-
 module.exports = router;
+
+// router.post('/testtime/', async (req, res) => {
+//     const time = moment(req.body.date_start).tz("Asia/Bangkok").format("MMM Do YY,h:mm:ss a");
+//     console.log(time);
+//     res.send(time.toUpperCase());
+// }
+// );
