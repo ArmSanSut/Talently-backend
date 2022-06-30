@@ -52,7 +52,7 @@ router.post('/quiz', (async (req, res) => {
 router.get('/strength/:id', async (req, res) => {
     try {
         const id = req.params.id
-        const strength = await pool.query('SELECT * FROM strength LEFT JOIN strength_answer ON strength.id = strength_answer.strength_1 || strength.id = strength_answer.strength_2  || strength.id = strength_answer.strength_3 || strength.id = strength_answer.strength_4 || strength.id = strength_answer.strength_5 || strength.id = strength_answer.strength_6 || strength.id = strength_answer.strength_7 || strength.id = strength_answer.strength_8 WHERE strength_answer.user_id = ? ORDER BY strength.id', [id])
+        const strength = await pool.query('SELECT strength.image FROM strength LEFT JOIN strength_answer ON strength.id = strength_answer.strength_1 || strength.id = strength_answer.strength_2  || strength.id = strength_answer.strength_3 || strength.id = strength_answer.strength_4 || strength.id = strength_answer.strength_5 || strength.id = strength_answer.strength_6 || strength.id = strength_answer.strength_7 || strength.id = strength_answer.strength_8 WHERE strength_answer.user_id = ? ORDER BY strength.id', [id])
         res.json(strength[0]);
     }
     catch (err) {
@@ -66,7 +66,8 @@ router.post('/strength/:id', async (req, res) => {
     try {
         const id = req.params.id
         const { strength_1, strength_2, strength_3, strength_4, strength_5, strength_6, strength_7, strength_8 } = req.body
-        const [rows, field] = await pool.query(`INSERT INTO \`strength_answer\`(\`user_id\`, \`strength_1\`, \`strength_2\`, \`strength_3\`, \`strength_4\`, \`strength_5\`, \`strength_6\`, \`strength_7\`, \`strength_8\`) VALUES (?)`,
+        console.log(req.body);
+        const [rows, field] = await pool.query(`INSERT INTO \`strength_answer\`(\`user_id\`, \`strength_1\`, \`strength_2\`, \`strength_3\`, \`strength_4\`, \`strength_5\`, \`strength_6\`, \`strength_7\`, \`strength_8\`) VALUES (?,?,?,?,?,?,?,?,?)`,
             [id, strength_1, strength_2, strength_3, strength_4, strength_5, strength_6, strength_7, strength_8])
         console.log(rows);
         if (rows.affectedRows === 1) {
