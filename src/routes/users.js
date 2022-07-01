@@ -33,11 +33,12 @@ router.get('/strength', async (req, res) => {
 router.post('/quiz', (async (req, res) => {
 
     try {
+        console.log(req.body);
         // const  {user_id,question_id, answer} = req.body;
         const [answers, field] = await pool.query('insert into user_score (user_id, question_id, answer, total_score) values ?', [req.body]);
         console.log(req.body.answers);
         console.log(answers);
-        if (answers.affectedRows === req.body.answers.length) {
+        if (answers.affectedRows === req.body.length) {
             return res.status(200).json({ message: "Successfully" });
         }
         return res.status(400).json({ message: "Something went wrong" })

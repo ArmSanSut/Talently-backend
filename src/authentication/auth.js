@@ -16,14 +16,16 @@ router.post('/token', async (req, res) => {
                 const token = jwt.sign(
                     {
                         id : login[0][0].id,
-                        firstname: login[0][0].name,
-                        lastname: login[0][0].sirname,
-                        username: login[0][0].username,
-                        email: login[0][0].email,
+                        firstname : login[0][0].name,
+                        lastname : login[0][0].sirname,
+                        username : login[0][0].username,
+                        email : login[0][0].email,
                     },
-                    privateKey, { expiresIn: "300000ms" }
+                    privateKey, 
+                    { expiresIn : 60 * 60 * 24 }
                 );
-                res.json({ token: token });
+                console.log(token);
+                res.json({ token });
             } else {
                 res.status(401).send({ error: "Invalid Credential" });
                 return;
