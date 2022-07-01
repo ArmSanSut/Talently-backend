@@ -34,7 +34,7 @@ router.post('/quiz', (async (req, res) => {
 
     try {
         // const  {user_id,question_id, answer} = req.body;
-        const [answers, field] = await pool.query('insert into user_score (user_id, question_id, answer, total_score) values ?', [req.body.answers]);
+        const [answers, field] = await pool.query('insert into user_score (user_id, question_id, answer, total_score) values ?', [req.body]);
         console.log(req.body.answers);
         console.log(answers);
         if (answers.affectedRows === req.body.answers.length) {
