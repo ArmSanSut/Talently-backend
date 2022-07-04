@@ -102,7 +102,6 @@ router.post('/achievement/:id', async (req, res) => {
         res.send(err);
     }
 });
-
 //get achievement from achievement's database
 router.get('/achievement/:id', async (req, res) => {
     try {
