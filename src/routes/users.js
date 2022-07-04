@@ -112,7 +112,7 @@ router.get('/achievement/:id', async (req, res) => {
         console.log("ERROR", err);
         res.send(err);
     }
-})
+});
 
 
 //register account to DB
