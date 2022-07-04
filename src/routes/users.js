@@ -9,6 +9,7 @@ const moment1 = require('moment');
 router.get('/', async (req, res) => {
     try {
         const questions = await pool.query('select * from questions_choices')
+        console.log(questions[0]);
         res.json(questions[0]);
     }
     catch (err) {
@@ -87,9 +88,9 @@ router.post('/strength/:id', async (req, res) => {
 router.post('/achievement/:id', async (req, res) => {
     try {
         const id = req.params.id
-        const { date_start, date_end, title, description } = req.body
-        const [rows,] = await pool.query(`INSERT INTO \`achievements\`(\`user_id\`, \`date_start\`, \`date_end\`, \`title\`, \`description\`) VALUES (?,?,?,?,?)`,
-            [id, date_start, date_end, title, description])
+        const { date_start, date_end, title, description, type } = req.body
+        const [rows,] = await pool.query(`INSERT INTO \`achievements\`(\`user_id\`, \`date_start\`, \`date_end\`, \`title\`, \`description\`,\`type\`) VALUES (?,?,?,?,?,?)`,
+            [id, date_start, date_end, title, description, type])
         console.log(rows);
         if (rows.affectedRows === 1) {
             return res.status(200).json({ message: "Successfully" })
@@ -106,7 +107,7 @@ router.post('/achievement/:id', async (req, res) => {
 router.get('/achievement/:id', async (req, res) => {
     try {
         const id = req.params.id
-        const achievement = await pool.query('SELECT * FROM achievements where id = ?', [id])
+        const achievement = await pool.query('SELECT * FROM achievements where user_id = ?', [id])
         res.json(achievement[0]);
     }
     catch (err) {
