@@ -106,10 +106,7 @@ router.post('/achievement/:id', async (req, res) => {
 router.get('/achievement/:id', async (req, res) => {
     try {
         const id = req.params.id
-<<<<<<< HEAD
-=======
         console.log(id);
->>>>>>> 61b0ead9a834eb5d3d5408e38cc45092e8b21b57
         const achievement = await pool.query('SELECT * FROM achievements where user_id = ?', [id])
         res.json(achievement[0]);
     }
