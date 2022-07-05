@@ -134,6 +134,21 @@ router.put('/update_achievement/:id', async (req, res) => {
     }
 })
 
+router.delete('/achievement/:id', async function (req, res, next) {
+    try {
+        const [rows, fields] = await pool.query(`DELETE FROM achievements WHERE id = '${req.params.id}' `)
+        if (rows.affectedRows === 1) {
+            res.status(200).send("Delete Successfully!!")
+        }
+        else {
+            res.status(404).send('Not Found');
+        }
+    }
+    catch (e) {
+        console.log(e);
+    }
+});
+
 
 //register account to DB
 router.post('/register', async (req, res) => {
