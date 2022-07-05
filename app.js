@@ -1,7 +1,10 @@
 const express = require('express');
 const cors = require('cors');
 const logger = require('morgan');
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
+const fileupload = require('express-fileupload');
+const path = require('path');
+
 
 const port = 3000;
 
@@ -15,7 +18,9 @@ app.use(express.json());
 app.use(express.urlencoded({extended : false}));
 app.use(logger('dev'));
 app.use(cookieParser());
-app.use(express.static('public'))
+app.use(express.static('public'));
+app.use('/static', express.static(path.join(__dirname, 'public')));
+app.use(fileupload());
 
 
 app.use('/api/user/', userRouter);

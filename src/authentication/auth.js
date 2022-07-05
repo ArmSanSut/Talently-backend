@@ -20,6 +20,7 @@ router.post('/token', async (req, res) => {
                         lastname : login[0][0].sirname,
                         username : login[0][0].username,
                         email : login[0][0].email,
+                        image : login[0][0].image
                     },
                     privateKey, 
                     { expiresIn : 60 * 60 * 24 }

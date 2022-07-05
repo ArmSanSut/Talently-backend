@@ -30,7 +30,7 @@ router.get('/strength', async (req, res) => {
 })
 
 //post 35 answers to DB
-router.post('/quiz', (async (req, res) => {
+router.post('/quiz/', (async (req, res) => {
 
     try {
         console.log(req.body);
@@ -106,7 +106,7 @@ router.post('/achievement/:id', async (req, res) => {
 router.get('/achievement/:id', async (req, res) => {
     try {
         const id = req.params.id
-        const achievement = await pool.query('SELECT * FROM achievements where id = ?', [id])
+        const achievement = await pool.query('SELECT * FROM achievements where user_id = ?', [id])
         res.json(achievement[0]);
     }
     catch (err) {
@@ -119,26 +119,60 @@ router.get('/achievement/:id', async (req, res) => {
 //register account to DB
 router.post('/register', async (req, res) => {
     try {
+        const newpath = __dirname + "/../../public/users_images/";
+        console.log(req.files.image);
+        const image = req.files.image;
+        const dotIndex = image.name.lastIndexOf('.');
+        const fileExtension = image.name.substr(dotIndex);
+        const randomFilename = (new Date()).getTime();
+        const filename = randomFilename + fileExtension;
+        console.log(filename);
         const { name, sirname, username, email, password } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
-        const [register, field] = await pool.query('insert into users (name, sirname, username, email, password) values (?,?,?,?,?)', [name, sirname, username, email, hashedPassword]);
+        const [register, field] = await pool.query('insert into users (name, sirname, username, email, password, image) values (?,?,?,?,?, ?)', [name, sirname, username, email, hashedPassword, filename]);
         console.log(register);
+        
+        image.mv(`${newpath}${filename}`, (err) => {
+            console.log("ERROR",err);
+        });
         if (register.affectedRows === 1) {
             return res.status(200).json({ message: "Successfully" })
         }
         return res.status(400).json({ message: "Something went wrong" })
+        // return res.status(200).json({gg: "OK"})
     }
     catch (err) {
         console.log("ERROR", err);
-        res.send(err);
+        return res.send(err);
     }
 });
 
+router.put("/edit-image/:id", async(req, res) => {
+    try{
+        const newpath = __dirname + "/../../public/users_images/";
+        console.log("1",req.files.image.name);
+        console.log("2",req.files);
+        const image = req.files.image;
+        const id = req.params.id;
+        const dotIndex = image.name.lastIndexOf('.');
+        const fileExtension = image.name.substr(dotIndex);
+        const randomFilename = (new Date()).getTime();
+        const filename = randomFilename + fileExtension;
+
+        const [imageEdit, field] = await pool.query("update users set image = ? where id = ?", [filename, id]);
+        console.log(imageEdit);
+
+        image.mv(`${newpath}${filename}`, (err) => {
+            console.log("ERROR",err);
+        });
+        return res.status(200).json({ message : "successfully edited", profileImage : filename })
+    }
+    catch (err) {
+        console.log("ERROR", err);
+        return res.send(err);
+    }
+})
+
+
 module.exports = router;
 
-// router.post('/testtime/', async (req, res) => {
-//     const time = moment(req.body.date_start).tz("Asia/Bangkok").format("MMM Do YY,h:mm:ss a");
-//     console.log(time);
-//     res.send(time.toUpperCase());
-// }
-// );
