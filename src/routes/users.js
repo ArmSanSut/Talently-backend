@@ -106,12 +106,31 @@ router.post('/achievement/:id', async (req, res) => {
 router.get('/achievement/:id', async (req, res) => {
     try {
         const id = req.params.id
+        console.log(id);
         const achievement = await pool.query('SELECT * FROM achievements where user_id = ?', [id])
         res.json(achievement[0]);
     }
     catch (err) {
         console.log("ERROR", err);
         res.send(err);
+    }
+})
+
+router.put('/update_achievement/:id', async (req, res) => {
+    try{
+        const [rows, fields] = await pool.query(`UPDATE achievements 
+        SET date_start = '${req.body.date_start}', date_end = '${req.body.date_end}', title = '${req.body.title}', description = '${req.body.description}', type = '${req.body.type}'
+        WHERE id = '${req.params.id}'`)
+        if (rows.affectedRows === 1) {
+    
+            res.status(200).send("Data Successfully Updated!!");
+        }
+        else {
+            res.status(400).send("Wrong Data!!. Can't Update!!")
+        }
+    }
+    catch (e) {
+        console.log(e);
     }
 })
 
