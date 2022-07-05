@@ -114,7 +114,7 @@ router.get('/achievement/:id', async (req, res) => {
         console.log("ERROR", err);
         res.send(err);
     }
-})
+});
 
 router.put('/update_achievement/:id', async (req, res) => {
     try{
