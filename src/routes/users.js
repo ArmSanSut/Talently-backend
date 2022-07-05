@@ -123,7 +123,7 @@ router.put('/update_achievement/:id', async (req, res) => {
         WHERE id = '${req.params.id}'`)
         if (rows.affectedRows === 1) {
     
-            res.status(200).send("Data Successfully Updated!!");
+            res.status(200).send({message : "Update successful"});
         }
         else {
             res.status(400).send("Wrong Data!!. Can't Update!!")
@@ -134,14 +134,29 @@ router.put('/update_achievement/:id', async (req, res) => {
     }
 })
 
+router.put('/update_strength/:id', async (req, res)=> {
+    try {
+        const [strength, fields] = await pool.query(`update strength_answer set strength_1 = '${req.body.strength_1}',strength_2 = '${req.body.strength_2}', strength_3 = '${req.body.strength_3}', strength_4 = '${req.body.strength_4}', strength_5 = '${req.body.strength_5}', strength_6 = '${req.body.strength_6}', strength_7 = '${req.body.strength_7}', strength_8 = '${req.body.strength_8}' where user_id = ${req.params.id}`);
+
+        if (strength.affectedRows === 1) {
+           return res.status(200).send("Data Successfully Updated!!");
+        } else {
+           return res.status(400).send("Wrong Data!!. Can't Update!!")
+        }
+    }
+    catch (err) {
+        console.log("ERROR : ", err);
+    }
+})
+
 router.delete('/achievement/:id', async function (req, res, next) {
     try {
         const [rows, fields] = await pool.query(`DELETE FROM achievements WHERE id = '${req.params.id}' `)
         if (rows.affectedRows === 1) {
-            res.status(200).send("Delete Successfully!!")
+           return res.status(200).send("Delete Successfully!!")
         }
         else {
-            res.status(404).send('Not Found');
+           return res.status(404).send('Not Found');
         }
     }
     catch (e) {
