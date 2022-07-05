@@ -9,6 +9,7 @@ const moment1 = require('moment');
 router.get('/', async (req, res) => {
     try {
         const questions = await pool.query('select * from questions_choices')
+        console.log(questions[0]);
         res.json(questions[0]);
     }
     catch (err) {
@@ -87,9 +88,9 @@ router.post('/strength/:id', async (req, res) => {
 router.post('/achievement/:id', async (req, res) => {
     try {
         const id = req.params.id
-        const { date_start, date_end, title, description } = req.body
-        const [rows,] = await pool.query(`INSERT INTO \`achievements\`(\`user_id\`, \`date_start\`, \`date_end\`, \`title\`, \`description\`) VALUES (?,?,?,?,?)`,
-            [id, date_start, date_end, title, description])
+        const { date_start, date_end, title, description, type } = req.body
+        const [rows,] = await pool.query(`INSERT INTO \`achievements\`(\`user_id\`, \`date_start\`, \`date_end\`, \`title\`, \`description\`,\`type\`) VALUES (?,?,?,?,?,?)`,
+            [id, date_start, date_end, title, description, type])
         console.log(rows);
         if (rows.affectedRows === 1) {
             return res.status(200).json({ message: "Successfully" })
@@ -101,11 +102,14 @@ router.post('/achievement/:id', async (req, res) => {
         res.send(err);
     }
 });
-
 //get achievement from achievement's database
 router.get('/achievement/:id', async (req, res) => {
     try {
         const id = req.params.id
+<<<<<<< HEAD
+=======
+        console.log(id);
+>>>>>>> 61b0ead9a834eb5d3d5408e38cc45092e8b21b57
         const achievement = await pool.query('SELECT * FROM achievements where user_id = ?', [id])
         res.json(achievement[0]);
     }
@@ -113,7 +117,40 @@ router.get('/achievement/:id', async (req, res) => {
         console.log("ERROR", err);
         res.send(err);
     }
+});
+
+router.put('/update_achievement/:id', async (req, res) => {
+    try{
+        const [rows, fields] = await pool.query(`UPDATE achievements 
+        SET date_start = '${req.body.date_start}', date_end = '${req.body.date_end}', title = '${req.body.title}', description = '${req.body.description}', type = '${req.body.type}'
+        WHERE id = '${req.params.id}'`)
+        if (rows.affectedRows === 1) {
+    
+            res.status(200).send("Data Successfully Updated!!");
+        }
+        else {
+            res.status(400).send("Wrong Data!!. Can't Update!!")
+        }
+    }
+    catch (e) {
+        console.log(e);
+    }
 })
+
+router.delete('/achievement/:id', async function (req, res, next) {
+    try {
+        const [rows, fields] = await pool.query(`DELETE FROM achievements WHERE id = '${req.params.id}' `)
+        if (rows.affectedRows === 1) {
+            res.status(200).send("Delete Successfully!!")
+        }
+        else {
+            res.status(404).send('Not Found');
+        }
+    }
+    catch (e) {
+        console.log(e);
+    }
+});
 
 
 //register account to DB
