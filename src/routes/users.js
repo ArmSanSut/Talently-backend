@@ -222,16 +222,22 @@ router.put("/edit-image/:id", async(req, res) => {
     }
 })
 
-// router.get('/score', async (req,res) => {
-//     try {
-//         const [score, fields] = await pool.query("select ")
-//     }
-//     catch (err) {
-//         console.log("ERROR", err);
-//         return res.send(err);
-//     }
-// })
-
+router.get('/score/:id', async (req,res) => {
+    try {
+        const id = req.params.id;
+        console.log(id);
+        const score = await pool.query("SELECT * FROM `user_score` WHERE user_id = ?", [id]);
+        const result = score[0].map(val => ({
+            id: val.id,
+            user_id: val.user_id,
+            score: JSON.parse(val.score)
+        }))
+        return res.status(200).json(result);
+    }
+    catch (err) {
+        console.log("ERROR", err);
+        return res.send(err);
+    }
+})
 
 module.exports = router;
-
