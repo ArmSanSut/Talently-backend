@@ -222,6 +222,16 @@ router.put("/edit-image/:id", async(req, res) => {
     }
 })
 
+// router.get('/score', async (req,res) => {
+//     try {
+//         const [score, fields] = await pool.query("select ")
+//     }
+//     catch (err) {
+//         console.log("ERROR", err);
+//         return res.send(err);
+//     }
+// })
+
 
 module.exports = router;
 
