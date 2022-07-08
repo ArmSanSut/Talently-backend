@@ -17,7 +17,7 @@ router.post('/token', async (req, res) => {
                     {
                         id : login[0][0].id,
                         firstname : login[0][0].name,
-                        lastname : login[0][0].sirname,
+                        lastname : login[0][0].surname,
                         username : login[0][0].username,
                         email : login[0][0].email,
                         image : login[0][0].image
