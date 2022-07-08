@@ -118,9 +118,9 @@ router.get('/achievement/:id', async (req, res) => {
 
 router.put('/update_achievement/:id', async (req, res) => {
     try{
-        const [rows, fields] = await pool.query(`UPDATE achievements 
-        SET date_start = '${req.body.date_start}', date_end = '${req.body.date_end}', title = '${req.body.title}', description = '${req.body.description}', type = '${req.body.type}'
-        WHERE id = '${req.params.id}'`)
+        const { date_start, date_end, title, description, type } = req.body;
+        const  id  = req.params.id ;
+        const [rows, fields] = await pool.query("UPDATE achievements SET date_start = ?, date_end = ?, title = ?, description = ?, type = ? WHERE id = ?", [date_start, date_end, title, description, type, id])
         if (rows.affectedRows === 1) {
     
             res.status(200).send({message : "Update successful"});
