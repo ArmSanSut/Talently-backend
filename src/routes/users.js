@@ -176,9 +176,9 @@ router.post('/register', async (req, res) => {
         const randomFilename = (new Date()).getTime();
         const filename = randomFilename + fileExtension;
         console.log(filename);
-        const { name, sirname, username, email, password } = req.body;
+        const { name, surname, username, email, password } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
-        const [register, field] = await pool.query('insert into users (name, sirname, username, email, password, image) values (?,?,?,?,?, ?)', [name, sirname, username, email, hashedPassword, filename]);
+        const [register, field] = await pool.query('insert into users (name, surname, username, email, password, image) values (?,?,?,?,?, ?)', [name, surname, username, email, hashedPassword, filename]);
         console.log(register);
         
         image.mv(`${newpath}${filename}`, (err) => {
